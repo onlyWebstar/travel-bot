@@ -12,10 +12,29 @@ class Config:
     # For local development, use SQLite
     DATABASE_URL = os.getenv('DATABASE_URL')
     
-    if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
-        # Railway uses postgres:// but SQLAlchemy needs postgresql://
-        DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
-    
+    if not DATABASE_URL:
+        # Railway provides this automatically
+        DATABASE_URL = os.getenv("DATABASE_URL_RAILWAY") or os.getenv("RAILWAY_DATABASE_URL")
     # If no DATABASE_URL, use SQLite for local development
     if not DATABASE_URL:
         DATABASE_URL = 'sqlite:///travel_bot.db'
+    
+    # Other configs...
+    DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+    
+    # Validate critical configs
+    @classmethod
+    def validate(cls):
+        missing = []
+        if not cls.DATABASE_URL:
+            missing.append("DATABASE_URL")
+        if not cls.AMADEUS_CLIENT_ID:
+            missing.append("AMADEUS_CLIENT_ID")
+        if not cls.AMADEUS_CLIENT_SECRET:
+            missing.append("AMADEUS_CLIENT_SECRET")
+        
+        if missing:
+            raise ValueError(f"Missing environment variables: {', '.join(missing)}")
+
+# Validate on import
+Config.validate()
