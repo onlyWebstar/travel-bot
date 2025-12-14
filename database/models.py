@@ -9,7 +9,7 @@ import json
 from datetime import datetime
 
 # Database URL with proper fallback
-DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///travel_bot.db')
+DATABASE_URL = Config.DATABASE_URL
 
 Base = declarative_base()
 

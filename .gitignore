@@ -4,9 +4,31 @@
 .env.development.local
 .env.test.local
 .env.production.local
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+myenv/
 
+# Database
+*.db
+*.sqlite
+*.sqlite3
 
-*.log
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
 .DS_Store
-dist/
-build/
+Thumbs.db
+
+# Logs
+*.log
