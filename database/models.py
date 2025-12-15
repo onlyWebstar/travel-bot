@@ -8,19 +8,12 @@ import os
 import json
 from datetime import datetime
 
-# Database URL with proper fallback
-DATABASE_URL = os.getenv("DATABASE_URL")
+# FIXED: Import Config class properly
+from config import Config
 
-# If using SQLite locally, PostgreSQL on Railway
-if DATABASE_URL and DATABASE_URL.startswith("postgres"):
-    # PostgreSQL connection
-    engine = create_engine(DATABASE_URL)
-else:
-    # Fallback to SQLite for local development
-    DATABASE_URL = DATABASE_URL or "sqlite:///./travel_bot.db"
-    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+# Use Config.DATABASE_URL instead of os.getenv
+DATABASE_URL = Config.DATABASE_URL
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 class User(Base):
