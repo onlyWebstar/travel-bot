@@ -1,0 +1,13 @@
+[phases.setup]
+nixPkgs = ["python310", "gcc", "postgresql"]
+
+[phases.install]
+cmds = [
+  "pip install --upgrade pip",
+  "pip install psycopg2-binary",
+  "pip install -r requirements.txt",
+  "python -m spacy download en_core_web_sm"
+]
+
+[start]
+cmd = "python bot.py"
