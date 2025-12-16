@@ -2,7 +2,7 @@ from telegram import Update, BotCommand
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from telegram.request import HTTPXRequest
 from config import Config
-from handlers.flight_handlers import handle_flight_request, handle_flight_selection
+from handlers.flight_handlers import handle_flight_request, handle_flight_selection, handle_origin_response
 from handlers.hotel_handlers import handle_hotel_request, handle_hotel_selection
 from handlers.preferences_handler import (
     PreferencesHandler, 
@@ -75,13 +75,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 I am your smart travel assistant!
 
 ✈️ **Flight Search** - With typo correction
-🏨 **Hotel Search** - Personalized results
 ⚙️ **Smart Preferences** - Learns from you
 🚀 **Lightning-fast** - Intelligent caching
 
 *Try these:*
 • "Flights to London"
-• "Hotels in Paris for 3 nights"
 • "Fly to Dubai tomorrow"
 
 I'll handle typos and suggest corrections! 😊
@@ -135,6 +133,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if user_message.startswith('/'): 
         return
+    if await handle_origin_response(update, context):
+        return  # Origin was handled
     
     # 1. Check Database for Active Session (Context Retention)
     try:
