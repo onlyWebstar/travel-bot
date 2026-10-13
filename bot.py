@@ -1,3 +1,4 @@
+import os
 from telegram import Update, BotCommand
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from telegram.request import HTTPXRequest
@@ -235,6 +236,16 @@ if __name__ == "__main__":
     print("✅ Fuzzy matching for error recovery")
     
     try:
-        application.run_polling()
+        base_url = os.environ.get("RENDER_EXTERNAL_URL")  # only set on Render
+        if base_url:
+            application.run_webhook(
+                listen="0.0.0.0",
+                port=int(os.environ.get("PORT", 10000)),
+                url_path=Config.TELEGRAM_TOKEN,
+                webhook_url=f"{base_url}/{Config.TELEGRAM_TOKEN}",
+                drop_pending_updates=True,
+            )
+        else:
+            application.run_polling()  # local development
     except Exception as e:
         print(f"❌ Bot crashed: {e}")
